@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    
+   <form id="form1" runat="server">
+
+      <h3>Image Example</h3>
+
+      <asp:Image id="Image1" runat="server"
+           AlternateText="Image text"
+           ImageAlign="left"
+           ImageUrl=@Model.ImageUrl/>
+  
+   </form>
+</div>
