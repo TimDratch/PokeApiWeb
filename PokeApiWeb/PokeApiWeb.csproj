@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Sprites\" />
+    <Folder Include="Data\Images\Sprites\" />
   </ItemGroup>
 
   <ItemGroup>

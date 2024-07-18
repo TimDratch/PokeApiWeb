@@ -1,27 +1,47 @@
-﻿using Flurl.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PokeApi.Contracts.Models;
-using System.Text.Json;
 
 namespace PokeUi.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        readonly string Url = @"https://localhost:7197/pokemon/snorlax";
+        public string ImageUrl = @"https://localhost:7197/Sprite/snorlax";
+        [BindProperty]
+        public InputModel Input { get; set; }
 
-        public string ImageUrl;
+        public class InputModel
+        {
+            public string PokemonName { get; set; }
+        }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
         }
 
-        public async void OnGet()
+        public void OnGet()
         {
-            var pokedata = await Url.GetJsonAsync<PokemonData>();
+        }
 
-            ImageUrl = pokedata.Sprites.Front_Default;
+        public  ActionResult OnPost()
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Message"] = "Please submit a Pokemon name";
+                return Page();
+            }
+
+            try
+            {
+
+                return RedirectToPage("/Pokemon", new { pokemonName = Input.PokemonName});
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PokeApi.Contracts.Enums;
 using PokeApiWeb.Services;
+using System.Net;
 
 namespace PokeApiWeb.Controllers
 {
@@ -19,17 +19,20 @@ namespace PokeApiWeb.Controllers
         }
 
         [HttpGet("{pokemon}")]
-        public async Task<ActionResult<string>> Get(string pokemon)
+        public async Task<ActionResult> Get(string pokemon)
         {
-            var spriteList = await _spriteDataService.Populate();
+            await _spriteDataService.PopulateSpriteImages();
 
-            var sprite = spriteList.SingleOrDefault(x => x.Name == pokemon);
+            try
+            {
+                var img = _spriteDataService.GetSpriteImage(pokemon);
 
-            if (sprite is null)
-                return BadRequest("Pokemon not found");
-
-
-            return Ok(sprite.Url);
+                return File(img, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Pokemon not found" + ex.Message);
+            }
         }
     }
 }

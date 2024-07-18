@@ -7,15 +7,28 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    
-   <form id="form1" runat="server">
+        <h3>
+            <img src="@Model.ImageUrl" />
+        </h3>
 
-      <h3>Image Example</h3>
+    <form method="post" id="pokemonForm" style="font-size:2em;padding-top:15em;position:relative;" onsubmit='disableButton()'>
+        <h1 class="border-bottom" style="text-align:center; padding-bottom:2em;">
+            Please Enter a pokemon to search<br />
+        </h1>
+        <div class="alert-warning">@TempData["Message"]</div>
+        <textarea asp-for="Input.PokemonName" placeholder="Enter Pokemon name here" class="form-input"></textarea>
+        <br />
+        <br />
+        <div class="container" style="text-align:center">
+            <button type="submit" class="btn btn-lg btn-primary" id="submit" style="font-size:1.5em; padding:0px,50px,0px,50px">Submit</button>
+        </div>
+    </form>
 
-      <asp:Image id="Image1" runat="server"
-           AlternateText="Image text"
-           ImageAlign="left"
-           ImageUrl=@Model.ImageUrl/>
-  
-   </form>
+    <script>
+        function disableButton() {
+            var btn = document.getElementById('submit');
+            btn.disabled = true;
+            btn.innerText = 'Posting...'
+        }
+    </script>
 </div>

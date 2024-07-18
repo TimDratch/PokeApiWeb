@@ -1,4 +1,7 @@
 ﻿using Flurl.Http;
+using Flurl.Http.Content;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using PokeApi.Contracts.Enums;
 using PokeApi.Contracts.Models;
 
@@ -16,7 +19,7 @@ namespace PokeApiWeb.Services
         }
 
         public StoredData DataType => StoredData.Sprites;
-        public List<Value> Data  => _serializerService.ReadFromFile<List<Value>>(DataType) ?? new List<Value>();
+        public List<Value> Data => _serializerService.ReadFromFile<List<Value>>(DataType);
 
         //TODO: 1: compile a list of all pokemon with sprite url
         //      2: save/read capability from list to json file (possibly implement PopulateDataServiceBase to avoid duplicating read/save code)
@@ -31,9 +34,13 @@ namespace PokeApiWeb.Services
                 var pokemonDataService = _populateDataFactory.Get(StoredData.Pokemon);
 
                 var pokedex = await pokemonDataService.Populate();
+                //Currently '-' some entries withe '-' character in the name have invalid data and are throwing errors when generating sprites
+                //TODO - make data models and parsing resilient enough to handle instances of bad data
+                var temp = new List<Value>();
+                var stripped = pokedex.Where(x => !x.Name.Contains('-')).ToList();
                 try
                 {
-                    foreach (var pokemon in pokedex)
+                    foreach (var pokemon in stripped)
                     {
                         var data = await pokemon.Url.GetJsonAsync<PokemonData>();
 
@@ -53,6 +60,24 @@ namespace PokeApiWeb.Services
 
             }
             return Data;
+        }
+
+
+        public async Task PopulateSpriteImages()
+        {
+            if (!Data.Any())
+                await Populate();
+
+            foreach(var value in Data)
+            {
+                _serializerService.WriteImageToFile(DataType, value.Name, value.Url);
+            }
+        }
+
+        public FileStream GetSpriteImage(string pokemon)
+        {
+            FileStream stream = File.Open($@"Data\Images\{DataType}\{pokemon}", FileMode.Open);
+            return stream;
         }
     }
 }

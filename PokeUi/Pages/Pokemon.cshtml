@@ -1,0 +1,10 @@
+﻿@page "{pokemonName}"
+@model PokemonModel
+@{
+    ViewData["Title"] = "Pokemon: " + ViewData["pokemonName"];
+}
+<h1>@ViewData["Title"]</h1>
+<p>This will be used to show a passed Sprite from the Index</p>
+<h2>
+    <img src="@Model.ImageUrl" />
+</h2>
