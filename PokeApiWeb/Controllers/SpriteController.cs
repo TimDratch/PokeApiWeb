@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using PokeApiWeb.Services;
 using System.Net;
 
@@ -33,6 +34,28 @@ namespace PokeApiWeb.Controllers
             {
                 return BadRequest("Pokemon not found" + ex.Message);
             }
+        }
+
+        //TODO Figure out how to pass the actual image in the dictionary
+        [HttpGet]
+        public async Task<Dictionary<string, FileStreamResult>> Get()
+        {
+            var pokedexDic = new Dictionary<string, FileStreamResult>();
+            var val = await _spriteDataService.Populate();
+            foreach (var item in val)
+            {
+                try
+                {
+                    var img = _spriteDataService.GetSpriteImage(item.Name);
+
+                    pokedexDic.Add(item.Name, File(img, "image/jpeg"));
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+            return pokedexDic;
         }
     }
 }

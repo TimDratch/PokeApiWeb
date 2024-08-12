@@ -8,3 +8,14 @@
 <h2>
     <img src="@Model.ImageUrl" />
 </h2>
+<table>
+    @foreach (var pokemon in Model.PokedexDic)
+    {
+        <tr>
+            <td>@pokemon.Key</td>
+            <td>
+                <img src="@pokemon.Value"/>
+            </td>
+        </tr>
+    }
+</table>

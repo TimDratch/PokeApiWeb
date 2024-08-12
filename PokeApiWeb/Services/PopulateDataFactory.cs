@@ -16,10 +16,7 @@ namespace PokeApiWeb.Services
         {
             var dataService = _dataServices.SingleOrDefault(x => x.DataType == storedDataType);
 
-            if (dataService == null)
-                throw new InvalidEnumArgumentException($"No concrete class found for {storedDataType}");
-
-            return dataService;
+            return dataService ?? throw new InvalidEnumArgumentException($"No concrete class found for {storedDataType}");
         }
     }
 }

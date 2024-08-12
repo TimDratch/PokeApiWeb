@@ -31,9 +31,16 @@ namespace PokeApiWeb.Controllers
             if (pokedexEntry is null)
                 return BadRequest("Pokemon not found");
 
-            var data =  await pokedexEntry.Url.GetJsonAsync<PokemonData>();
+            var data = await pokedexEntry.Url.GetJsonAsync<PokemonData>();
 
             return Ok(data);
+        }
+
+        [HttpGet]
+        public async Task<List<string>> GetPokemonList()
+        {
+            var data = await _dataService.Populate();
+            return data.Select(x => x.Name).ToList();
         }
     }
 }
